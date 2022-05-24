@@ -4,7 +4,7 @@ export default function Client( {exitParking, getBalance, inTime , outTime,
   showButton, enterParking, amount}) {
   return (
     <div>
-      <h1> Client </h1>
+      <h1> Parker </h1>
         <div>
           {
             showButton && <button onClick={enterParking}>
@@ -18,16 +18,16 @@ export default function Client( {exitParking, getBalance, inTime , outTime,
         </div>
         <div>
           <div>
-            Amount signed: {amount} ether
+            <b>Amount signed:</b> {amount} ether
           </div>
           <div>
-            In Time: {inTime}
+            <b>In Time: </b>{inTime}
           </div>
           <div>
-            { outTime && <>Out Time : {outTime}</>}
+            { outTime && <><b>Out Time : </b>{outTime}</>}
           </div>
           {
-            outTime && <div> Total amount: {amount} </div> 
+            outTime && <div> <b>Total amount:</b> {amount} </div> 
           }
         </div>
     </div>
