@@ -1,5 +1,6 @@
 import * as React from 'react'
-import ParkingContract from '../contracts/ParkingContract.json'
+import ParkingContract from '../contracts/ParkerFunctions.json'
+import OwnerFunctions from '../contracts/ParkingSystem.json'
 import getWeb3 from "../getWeb3";
 import { signPayment } from '../utils/signatureFunctions';
 
@@ -15,7 +16,7 @@ export default function useContract() {
     const [signature, setSignature] = React.useState();
     const [contractAddress, setContractAddress] = React.useState()
     const [amount, setAmount] = React.useState(0.0);
-    const [nonce, setNonce] = React.useState()
+    const [nonce, setNonce] = React.useState('')
     const [owner, setOwner] = React.useState()
     const [parker, setParker] = React.useState({})
     const [showButton, setShowButton] = React.useState(true)
@@ -121,9 +122,16 @@ export default function useContract() {
     console.log("new amt: ",amount);
 
     const ifRegistered = async () => {
-        return await contract.methods.checkIfOwnerExists(account);
+        console.log(contract.methods);
+        // const w =await contract.methods.checkIfOwnerExists(account.toString()).call();
+        const w = await contract.methods.getAddress().call();
+        return w;
     }
 
-  return {web3,account,contract, outTime, ifRegistered, 
-    enterParking, exitParking, claimExit, showButton, amount, inTime}
+    const registerParking = async (_noOfParking, _billAmt, _timeout) => {
+        await contract.methods.registerParking(_noOfParking,_billAmt, _timeout).call();
+    }
+
+  return {web3,account,contract, outTime, ifRegistered, registerParking,
+    enterParking, exitParking, claimExit, showButton, amount, inTime, parker}
 }

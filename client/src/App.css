@@ -49,3 +49,9 @@ button:hover{
 .owner{
   background-color: #b3f7b0;
 }
+input[type="text"]{
+  border-radius: 5px;
+  padding: 5px 10px;
+  border: none;
+  margin-left: 20px;
+}

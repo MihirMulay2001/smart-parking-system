@@ -5,26 +5,28 @@ import Owner from './sections/Owner';
 import './App.css'
 
 const App = () => {
-    const {web3, accounts, contract,enterParking, inTime, outTime,
-      exitParking, claimExit, getBalance, showButton, amount} = useContract();
+    const {web3,enterParking, contract,inTime, outTime, registerParking,
+      exitParking, claimExit, getBalance, showButton, amount, parker, ifRegistered} = useContract();
 
     const [user, setUser] = React.useState('owner')
-    if(!web3 ) return <div>Loading Web3, accounts, and contract...</div>
+    if(!web3 || contract == {}) {
+      return <div>Loading Web3, accounts, and contract...</div>
+    }
     return (
       <div className="App">
         <div className="menu">
-          <div className={user == "parker" ? "active" : ""}
+          <div className={user === "parker" ? "active" : ""}
           onClick={() => setUser("parker")}>
             Parker
           </div>
-          <div className={user == "owner" ? "active" : ""}
+          <div className={user === "owner" ? "active" : ""}
           onClick={() => setUser("owner")}>
             Owner
           </div>
         </div>
         <div className="websection">
           {
-            user == 'parker'
+            user === 'parker'
             ?<div className='parker'>
               <Client showButton = {showButton} enterParking={enterParking} inTime={inTime}
               exitParking={exitParking} getBalance={getBalance} amount={amount} outTime={outTime}
@@ -33,9 +35,9 @@ const App = () => {
             :''
           }
           {
-            user == 'owner'
+            user === 'owner'
             ?<div className='owner'>
-              <Owner claimExit={claimExit} />
+              <Owner claimExit={claimExit} registerParking={registerParking} parker={parker} ifRegistered={ifRegistered}/>
             </div>
             :''
           }
