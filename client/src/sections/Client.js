@@ -2,6 +2,13 @@ import React from 'react'
 
 export default function Client( {exitParking, getBalance, inTime , outTime,
   showButton, enterParking, amount}) {
+
+    
+    const _enterParking = async (e) => {
+      e.preventDefault();
+      enterParking(document.getElementById('owneraddress').value);
+    }
+
   return (
     <div>
       <h1> Parker </h1>
@@ -9,10 +16,10 @@ export default function Client( {exitParking, getBalance, inTime , outTime,
           {
             showButton && <div>
               <label>Enter owner address</label>
-              <input type={"text"} placeholder="0x9764ma4bc3...." />
-              <button onClick={enterParking}>
-            Enter parking
-            </button>
+              <input type={"text"} id="owneraddress" placeholder="0x9764ma4bc3...." />
+              <button onClick={_enterParking}>
+              Enter parking
+              </button>
             </div>
           }
           {

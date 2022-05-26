@@ -5,11 +5,11 @@ import Owner from './sections/Owner';
 import './App.css'
 
 const App = () => {
-    const {web3,enterParking, contract,inTime, outTime, registerParking,
+    const {web3,enterParking, contract,inTime, outTime, registerParking, ifRegisteredFunc,
       exitParking, claimExit, getBalance, showButton, amount, parker, ifRegistered} = useContract();
 
     const [user, setUser] = React.useState('owner')
-    if(!web3 || contract == {}) {
+    if(!web3 || Object.entries(contract).length == 0) {
       return <div>Loading Web3, accounts, and contract...</div>
     }
     return (
@@ -37,7 +37,7 @@ const App = () => {
           {
             user === 'owner'
             ?<div className='owner'>
-              <Owner claimExit={claimExit} registerParking={registerParking} parker={parker} ifRegistered={ifRegistered}/>
+              <Owner claimExit={claimExit} registerParking={registerParking} parker={parker} ifRegisteredFunc={ifRegisteredFunc} ifRegistered={ifRegistered}/>
             </div>
             :''
           }

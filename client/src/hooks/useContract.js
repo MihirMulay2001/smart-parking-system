@@ -1,6 +1,5 @@
 import * as React from 'react'
 import ParkingContract from '../contracts/ParkerFunctions.json'
-import OwnerFunctions from '../contracts/ParkingSystem.json'
 import getWeb3 from "../getWeb3";
 import { signPayment } from '../utils/signatureFunctions';
 
@@ -22,6 +21,7 @@ export default function useContract() {
     const [showButton, setShowButton] = React.useState(true)
     const [inTime, setInTime] = React.useState('')
     const [outTime, setOutTime] = React.useState(false)
+    const [ifRegistered, setIfRegistered] = React.useState(false)
     const charge = 0.1;
 
 
@@ -38,7 +38,6 @@ export default function useContract() {
                 setWeb3(web3)
                 const accounts = await web3.eth.getAccounts()
                 setAccount(accounts[0])
-                console.log("account: ", account)
                 const networkId = await web3.eth.net.getId()
                 const deployedNetwork = ParkingContract.networks[networkId]
                 const instance = new web3.eth.Contract(
@@ -48,7 +47,9 @@ export default function useContract() {
                 setContract(instance)
 
                 const cntaddr = await instance.methods.getAddress().call()
+                console.log(cntaddr);
                 setContractAddress(cntaddr)
+                
                 
             } catch (error) {
                 alert(
@@ -64,32 +65,41 @@ export default function useContract() {
         return ()=> clearInterval(timeout);
     }, []);
 
+
     const enterParking = async (e) => {
-        e.preventDefault()
-        setNonce(web3.utils.soliditySha3({type:'address',value: account },
-        {type:'uint256',value: Math.floor((new Date()).valueOf()/1000)}))
-        console.log(nonce);
-        // await contract.methods.enterParking(owner).send({from: account,value: ETHER(0.5) });
-        setInTime(new Date().toString())
-        addAmountSign() 
+        const _owner = e
+        // const _nonce = web3.utils.soliditySha3({type:'address',value: account },
+        // {type:'uint256',value: Math.floor((new Date()).valueOf()/1000)}) 
+        const _nonce = Math.floor((new Date()).valueOf()/1000);
+        setOwner(_owner)
+        setNonce(_nonce)
+        await contract.methods.enterParking(_owner).send({from: account,value: ETHER(0.5) });
+        setInTime(Math.floor(new Date().valueOf() / 1000))
+        addAmountSign(_owner, _nonce) 
+        setShowButton(false)
         
     }
     myAmt = amount;
-    const signInterval = async () => {
+    const signInterval = async (_owner, _nonce) => {
+        console.log(_owner,_nonce);
             const a = Number(Number(myAmt + 0.10).toFixed(2))
-            console.log("amount: ", myAmt);
             try{
-                const signa = await signPayment(contractAddress, web3, ETHER(myAmt), account, owner, () => {
+                const signa = await signPayment(contractAddress, web3, ETHER(a), account, _owner, _nonce, () => {
                     console.log(a,"signed by account", account)})
-                console.log(signa);
                 setSignature(signa)
                 setAmount(a)
             }catch(e){
-                console.log(e);
+                console.log("error: ",e);
             }
     }
-    const addAmountSign = () => {
-        timeout = setInterval(signInterval,3000)
+
+
+    const addAmountSign = (_owner, _nonce) => {
+        timeout = setInterval(() => {
+            const _o = _owner
+            const _n = _nonce
+            signInterval(_o, _n)
+        },15000)
     }
 
 
@@ -97,15 +107,16 @@ export default function useContract() {
         e.preventDefault();
         clearInterval(timeout);
         setOutTime(new Date().toString())
-        const inTime = await contract.methods.getInTime(account).call()
         const currTime = Math.floor((new Date()).valueOf()/1000)
-        const amt = (Math.floor((currTime - inTime)  / 20) * charge).toFixed(2) 
+        console.log(inTime, currTime);
+        const amt = (Math.floor((currTime - inTime)  / 15) * charge).toFixed(2) 
         console.log(amt);
         setParker(({
                 address: account,
                 nonce: nonce,
-                amount: (amt*ETHER).toString(),
-                signature: signature
+                amount: ETHER(amt),
+                signature: signature,
+                owner: owner
             })
         )
     }
@@ -113,25 +124,22 @@ export default function useContract() {
     const claimExit = async (e) => {
         e.preventDefault()
         
-        const {address, nonce, amount: amt, signature : sig} = parker;
-        console.log(address, nonce, amt, sig);
+        const {address, nonce, amount: amt, signature : sig, owner: _owner} = parker;
+        console.log(address.toString(), nonce, amt, sig);
         // const currTime = Math.floor((new Date()).valueOf()/1000)
-        const getFunds = await contract.methods.claimFunds(amt,sig,nonce, address).send({from: owner})
+        const getFunds = await contract.methods.claimFunds(amt,sig,nonce, address).send({from: account, gasLimit: 1000000})
         console.log(getFunds);
     }
-    console.log("new amt: ",amount);
 
-    const ifRegistered = async () => {
-        console.log(contract.methods);
-        // const w =await contract.methods.checkIfOwnerExists(account.toString()).call();
-        const w = await contract.methods.getAddress().call();
-        return w;
+    const ifRegisteredFunc = async () => {
+        const w =await contract.methods.checkIfOwnerExists(account).call();
+        setIfRegistered(w)
     }
 
     const registerParking = async (_noOfParking, _billAmt, _timeout) => {
-        await contract.methods.registerParking(_noOfParking,_billAmt, _timeout).call();
+        await contract.methods.registerParking(_noOfParking,ETHER(_billAmt), _timeout).send({from: account, value: ETHER(0.001 * _noOfParking) });
     }
 
-  return {web3,account,contract, outTime, ifRegistered, registerParking,
+  return {web3,account,contract, outTime, ifRegistered, registerParking, ifRegisteredFunc,
     enterParking, exitParking, claimExit, showButton, amount, inTime, parker}
 }

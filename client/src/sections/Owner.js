@@ -1,13 +1,15 @@
 import React from 'react'
 
-export default function Owner({claimExit, registerParking, ifRegistered, parker }) {
-  
+export default function Owner({claimExit, registerParking, ifRegisteredFunc, ifRegistered, parker }) {
+
+  React.useEffect(()=>{
+      ifRegisteredFunc()
+    }, [])
   const [ownerInfo, setOwnerInfo] = React.useState({
     noOfParkingSpots: 0,
     billAmt : 0,
     timeout: 0
   })
-  console.log(ifRegistered());
   const handleChange = (e) => {
     e.preventDefault();
     const {name, value} = e.target
@@ -18,12 +20,17 @@ export default function Owner({claimExit, registerParking, ifRegistered, parker 
     })
     )
   }
+  async function _registerParking(e){
+    e.preventDefault();
+    await registerParking(ownerInfo.noOfParkingSpots, ownerInfo.billAmt, ownerInfo.timeout)
+    console.log("success");
+  }
   return (
     <div>
       <h1> Owner </h1>
       <div>
         {
-          false
+          ifRegistered
           ? <div>
               { <div>
                     {parker.name}
@@ -40,7 +47,6 @@ export default function Owner({claimExit, registerParking, ifRegistered, parker 
               <input type="text" name="noOfParkingSpots" value={ownerInfo.noOfParkingSpots} 
               onChange={handleChange} placeholder='10'/>
             </div>
-
             <div>
               <label>Bill amount (in ether)</label>
               <input type="text" placeholder='0.02' name="billAmt" 
@@ -53,10 +59,9 @@ export default function Owner({claimExit, registerParking, ifRegistered, parker 
               value = {ownerInfo.timeout} onChange={handleChange} />
             </div>
 
-            <button onClick={registerParking}>
+            <button onClick={_registerParking}>
               Register now
             </button>
-
             </div>
         }
       </div>

@@ -4,6 +4,10 @@ pragma solidity >0.6.0;
 import "./ParkingSystem.sol";
 
 contract ParkerFunctions is ParkingSystem {
+    constructor() payable {
+        contractAddress = address(this);
+    }
+
     function numberOfFreeParkings(address _owner) public view returns (uint16) {
         return ownersList[_owner].numOfParkings;
     }

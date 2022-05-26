@@ -1,7 +1,6 @@
 
     
     const constructPaymentMessage = (_receipAdd, _amount, _contractAddr, _nonce, web3) => {
-        console.log(_receipAdd, _amount, _nonce, _contractAddr);
         const hash =web3.utils.soliditySha3({type:'address',value: _receipAdd },
         {type:'uint256',value: _amount},{type:'uint256',value: _nonce},
         {type:'address',value: _contractAddr})

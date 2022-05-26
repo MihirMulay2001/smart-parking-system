@@ -17,18 +17,14 @@ contract ParkingSystem is SigCheck {
     mapping(address => ParkingInfo) ownersList;
     mapping(address => ParkerInfo) parkersList;
     mapping(uint256 => bool) usedNonces;
-    address contractAddress;
-
-    constructor() payable {
-        contractAddress = address(this);
-    }
+    address internal contractAddress;
 
     function registerParking(
         uint16 _numOfParking,
         uint256 _billAmt,
         uint256 _timeout
     ) external payable {
-        require(msg.value == _numOfParking * 0.001 ether);
+        require(msg.value == _numOfParking * 0.001 ether, "not enough money ");
         payable(contractAddress).transfer(msg.value);
         ownersList[msg.sender] = ParkingInfo(_numOfParking, _billAmt, _timeout);
     }
