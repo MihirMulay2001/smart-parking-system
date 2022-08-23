@@ -19,6 +19,13 @@ contract ParkingSystem is SigCheck {
     mapping(uint256 => bool) usedNonces;
     address internal contractAddress;
 
+    event RegisterParking(
+        address indexed owner,
+        uint16 numOfParking,
+        uint256 billamt,
+        uint256 timeout
+    );
+
     function registerParking(
         uint16 _numOfParking,
         uint256 _billAmt,

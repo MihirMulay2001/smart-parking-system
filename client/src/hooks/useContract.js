@@ -79,7 +79,7 @@ export default function useContract() {
     setOwner(_owner);
     setNonce(_nonce);
     await contract.methods
-      .enterParking(_owner)
+      .enterParking(_owner, _nonce)
       .send({ from: account, value: ETHER(0.5) });
     setInTime(Math.floor(new Date().valueOf() / 1000));
     addAmountSign(_owner, _nonce);

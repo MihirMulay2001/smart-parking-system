@@ -26,6 +26,7 @@ export const Card = ({
     billAmt: 0,
     timeout: 0,
   });
+  const [ownerAddr, setOwnerAddr] = useState("");
   const handleChange = (e) => {
     e.preventDefault();
     const { name, value } = e.target;
@@ -46,7 +47,8 @@ export const Card = ({
 
   async function _enterParking(e) {
     e.preventDefault();
-    await enterParking("0x4720C905840383E93ed84A7ECCe181B76c9a62E1");
+    if (ownerAddr) await enterParking(ownerAddr);
+    else console.log("no address");
   }
   // console.log(userType)
 
@@ -67,6 +69,16 @@ export const Card = ({
         {/* render only if client */}
         {userType === "Client" ? (
           <div className="client--buttons">
+            <input
+              type="text"
+              name="ownerAddr"
+              palceholder="0x32434..."
+              value={ownerAddr}
+              onChange={(e) => {
+                e.preventDefault();
+                setOwnerAddr(e.target.value);
+              }}
+            />
             <Button
               buttonName={userType}
               buttonText={"Enter Parking"}
