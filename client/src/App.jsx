@@ -19,6 +19,7 @@ function App() {
     claimExit,
     getBalance,
     showButton,
+    userData,
     amount,
     parker,
     ifRegistered,
@@ -56,33 +57,35 @@ function App() {
 
   return (
     <div className="App">
-      {/* Renders Login page 
-          Pass in handle Click function down to components
-      
-      */}
-      {!login && <LoginPage handleClick={goBackClick} />}
+      {userData.name ? (
+        <>
+          <h1>Welcome {userData.name}</h1>
+          {!login && <LoginPage handleClick={goBackClick} />}
 
-      {/* Renders UI 
-          Pass in handle Click function down to components
-      */}
-      {login && (
-        <ParkingInterface
-          handleClick={interfaceHandleClick}
-          loginHandleClick={goBackClick}
-          userType={userType}
-          showButton={showButton}
-          enterParking={enterParking}
-          inTime={inTime}
-          exitParking={exitParking}
-          getBalance={getBalance}
-          amount={amount}
-          outTime={outTime}
-          claimExit={claimExit}
-          registerParking={registerParking}
-          parker={parker}
-          ifRegisteredFunc={ifRegisteredFunc}
-          ifRegistered={ifRegistered}
-        />
+          {login && (
+            <ParkingInterface
+              handleClick={interfaceHandleClick}
+              loginHandleClick={goBackClick}
+              userType={userType}
+              showButton={showButton}
+              enterParking={enterParking}
+              inTime={inTime}
+              exitParking={exitParking}
+              getBalance={getBalance}
+              amount={amount}
+              outTime={outTime}
+              claimExit={claimExit}
+              registerParking={registerParking}
+              parker={parker}
+              ifRegisteredFunc={ifRegisteredFunc}
+              ifRegistered={ifRegistered}
+            />
+          )}
+        </>
+      ) : (
+        <div>
+          <h1>Tap Card to sign in</h1>
+        </div>
       )}
     </div>
   );

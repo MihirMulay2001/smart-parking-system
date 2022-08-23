@@ -2,9 +2,10 @@ import * as React from "react";
 import ParkingContract from "../contracts/ParkerFunctions.json";
 import getWeb3 from "../getWeb3";
 import { signPayment } from "../utils/signatureFunctions";
-// import { w3cwebsocket as W3CWebSocket } from "websocket";
+import { w3cwebsocket as W3CWebSocket } from "websocket";
+import users from "../data/users.json";
 
-// const client = new W3CWebSocket("ws://192.168.30.106:8000");
+const client = new W3CWebSocket("ws://192.168.30.206:8888");
 
 const ETHER = (_v) => `${_v * 10 ** 18}`;
 let myAmt = 0;
@@ -25,6 +26,7 @@ export default function useContract() {
   const [inTime, setInTime] = React.useState("");
   const [outTime, setOutTime] = React.useState(false);
   const [ifRegistered, setIfRegistered] = React.useState(false);
+  const [userData, setUserData] = React.useState({ name: "Mihir" });
   const charge = 0.1;
 
   //247111118375
@@ -39,6 +41,7 @@ export default function useContract() {
     };
     client.onmessage = (message) => {
       console.log(JSON.parse(message.data));
+      setUserData(users.find((_d) => _d.cardId === message.data));
     };
     const func = async () => {
       try {
@@ -175,6 +178,7 @@ export default function useContract() {
     claimExit,
     showButton,
     amount,
+    userData,
     inTime,
     parker,
   };

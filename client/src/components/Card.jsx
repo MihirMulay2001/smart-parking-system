@@ -26,7 +26,7 @@ export const Card = ({
     billAmt: 0,
     timeout: 0,
   });
-  const [ownerAddr, setOwnerAddr] = useState("");
+  const [ownerAddr, setOwnerAddr] = React.useState("");
   const handleChange = (e) => {
     e.preventDefault();
     const { name, value } = e.target;
@@ -142,7 +142,7 @@ export const Card = ({
               handleClick={loginHandleClick}
               goBack={true}
               className={"card--button"}
-              onClick={_registerParking}
+              clickFunc={_registerParking}
             />
             <Button
               buttonText={"Go back"}
