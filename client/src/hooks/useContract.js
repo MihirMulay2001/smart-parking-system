@@ -26,7 +26,7 @@ export default function useContract() {
   const [inTime, setInTime] = React.useState("");
   const [outTime, setOutTime] = React.useState(false);
   const [ifRegistered, setIfRegistered] = React.useState(false);
-  const [userData, setUserData] = React.useState({ name: "Mihir" });
+  const [userData, setUserData] = React.useState({});
   const charge = 0.1;
 
   //247111118375

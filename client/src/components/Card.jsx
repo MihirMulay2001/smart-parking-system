@@ -63,7 +63,12 @@ export const Card = ({
           <div className="card--info">
             {/* fill in with dynamic data later */}
             <h4>{`Amount signed: ${amount} ether`}</h4>
-            <h4>{`In Time: ${inTime}`}</h4>
+            <h4>
+              {inTime && (
+                <>{`In Time: ${new Date(inTime * 1000).toString()}`}</>
+              )}
+            </h4>
+            <h4>{outTime && <>{`Out time ${outTime}`}</>}</h4>
           </div>
         )}
         {/* render only if client */}
@@ -128,7 +133,7 @@ export const Card = ({
             </div>
 
             <div>
-              <label>Timeout (in minutes)</label>
+              <label>Timeout (in seconds)</label>
               <input
                 type="text"
                 placeholder="10"
@@ -158,6 +163,8 @@ export const Card = ({
               handleClick={handleClick}
               goBack={false}
             />
+            <span>Address of client: </span>
+            <input type="text" name="clientaddr" placeholder="0x2332434" />
           </div>
         )}
       </div>
